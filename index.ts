@@ -17,10 +17,10 @@ let driver = await new s.Builder().forBrowser(s.Browser.CHROME).build()
 async function clickPopunders(driver:s.ThenableWebDriver | s.WebDriver) {
     console.log("destroying popunders")
     driver.executeScript(`
-let pu = document.querySelectorAll("div[style*="z-index: 2147483647;"][style*="position: fixed;"]")
-for (let i = 0; i < pu.length; i++) {
-    pu[i].remove()
-}
+    let pu = document.querySelectorAll("div[style*=\"z-index: 2147483647;\"][style*=\"position: fixed;\"]")
+    for (let i = 0; i < pu.length; i++) {
+        pu[i].remove()
+    }
 `)
 }
 try {
