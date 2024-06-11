@@ -52,7 +52,7 @@ try {
 } finally {
     // get impressions before exiting 
     console.log("Farming impressions...")
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 8; i++) {
     await driver.executeScript("document.location = document.location")
     await timeout(3000)
     }
