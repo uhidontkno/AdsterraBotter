@@ -28,7 +28,7 @@ try {
     await clickPopunders(driver);
     await timeout(2000);
 
-    const ads = await driver.findElements(s.By.css('iframe[width="728"], iframe[width="468"], iframe[width="300"]'));
+    const ads = await driver.findElements(s.By.css('iframe[width="728"], iframe[width="468"], iframe[width="300"], iframe[width="320"], iframe[width="160"]'));
     console.log(`Found ${ads.length} ads! Clicking...`)
     for (const ad of ads) {
         
