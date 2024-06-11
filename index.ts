@@ -5,8 +5,18 @@ function timeout(ms:number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 } 
 async function refreshPage(driver: s.WebDriver) {
+    let timeout = 6000;
     await driver.navigate().refresh();
-    await driver.wait(s.until.elementLocated(s.By.css('body')), 5000); 
+    await driver.wait(s.until.elementLocated(s.By.css('body')), timeout);
+    await driver.wait(async () => {
+        const domContentLoaded = await driver.executeScript("return document.readyState === 'interactive' || document.readyState === 'complete'");
+        return domContentLoaded;
+    }, timeout);
+
+    await driver.wait(async () => {
+        const loadEvent = await driver.executeScript("return window.performance.timing.loadEventEnd > 0");
+        return loadEvent;
+    }, timeout);
 }
 async function closeOthers(driver:s.ThenableWebDriver | s.WebDriver,tab:string) {
     const allHandles = await driver.getAllWindowHandles();
@@ -60,6 +70,7 @@ try {
     console.log("Farming impressions...")
     for (let i = 0; i < 4; i++) {
     await refreshPage(driver)
+    await timeout(600);
     }
     console.log("Exiting!")
     await driver.quit();
