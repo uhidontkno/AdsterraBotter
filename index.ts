@@ -58,7 +58,7 @@ try {
 } finally {
     // get impressions before exiting 
     console.log("Farming impressions...")
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 4; i++) {
     await refreshPage(driver)
     }
     console.log("Exiting!")
