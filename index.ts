@@ -1,5 +1,6 @@
 
 import * as s from "selenium-webdriver"
+import {Options} from "selenium-webdriver/chrome.js";
 
 function timeout(ms:number) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -30,7 +31,11 @@ async function closeOthers(driver:s.ThenableWebDriver | s.WebDriver,tab:string) 
 }
 
 let url = "https://s.deblok.me/adf.html"
-let driver = await new s.Builder().forBrowser(s.Browser.CHROME).build()
+const options = new Options();
+// ensure a new browsing session is created
+options.addArguments("--incognito","--disable-dev-shm-usage","--no-sandbox","disk-cache-size=0")
+let driver = await new s.Builder().forBrowser(s.Browser.CHROME).setChromeOptions(options).build()
+
 async function clickPopunders(driver:s.ThenableWebDriver | s.WebDriver) {
     driver.executeScript(`
     let pu = document.querySelectorAll("div[style*=\\"z-index: 2147483647;\\"][style*=\\"position: fixed;\\"]")
@@ -39,11 +44,14 @@ async function clickPopunders(driver:s.ThenableWebDriver | s.WebDriver) {
     }
 `);
 }
+
 try {
-    await driver.get(url);
+    await driver.get("about:blank");
+    driver.manage().deleteAllCookies();
     const tab = await driver.getWindowHandle();
     
-    await timeout(2000);
+    await driver.get(url);
+    await timeout(3500);
     await clickPopunders(driver);
     const ads = await driver.findElements(s.By.css('iframe[width="728"], iframe[width="468"], iframe[width="300"], iframe[width="320"], iframe[width="160"]'));
     console.log(`Found ${ads.length} ads! Clicking...`)
@@ -55,7 +63,7 @@ try {
         await link.click();
         await timeout(800);
         await driver.switchTo().window(tab); 
-        await timeout(800);
+        await timeout(200);
         } catch {
             // intercepted click
             console.log("Popunder intercepted click, getting rid of it...")
