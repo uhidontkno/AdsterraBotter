@@ -15,12 +15,13 @@ import * as s from "selenium-webdriver"
 let url = "https://s.deblok.me/adf.html"
 let driver = await new s.Builder().forBrowser(s.Browser.CHROME).build()
 async function clickPopunders(driver:s.ThenableWebDriver | s.WebDriver) {
-    const popunders = await driver.findElements(s.By.css('div[style*="z-index: 2147483647;"][style*="position: fixed;"]'));
-    for (const div of popunders) {
-        console.log("Found (possible) popunder")
-        const links = await div.findElements(s.By.tagName('a'));
-        await links[0].click();
-    }
+    console.log("destroying popunders")
+    driver.executeScript(`
+let pu = document.querySelectorAll("div[style*="z-index: 2147483647;"][style*="position: fixed;"]")
+for (let i = 0; i < pu.length; i++) {
+    pu[i].remove()
+}
+`)
 }
 try {
     await driver.get(url);
@@ -29,15 +30,16 @@ try {
     await timeout(2000);
 
     const ads = await driver.findElements(s.By.css('iframe[width="728"], iframe[width="468"], iframe[width="300"]'));
+    console.log(`Found ${ads.length} ads! Clicking...`)
     for (const ad of ads) {
-        console.log("Found (possible) ad");
+        
         await driver.switchTo().frame(ad);
         const link = await driver.findElement(s.By.tagName('a'));
         try {
         await link.click();
         } catch {
             // intercepted click, attempt to click popunders
-            console.log("Popunder intercepted click, clicking popunders...")
+            console.log("Popunder intercepted click, getting rid of it...")
             await clickPopunders(driver);
         }
         //await driver.close();
@@ -48,5 +50,12 @@ try {
 } catch (error) {
     console.error("Error:", error);
 } finally {
-    // await driver.quit();
+    // get impressions before exiting 
+    console.log("Farming impressions...")
+    for (let i = 0; i < 2; i++) {
+    await driver.executeScript("document.location = document.location")
+    await timeout(3000)
+    }
+    console.log("Exiting!")
+    await driver.quit();
 }
