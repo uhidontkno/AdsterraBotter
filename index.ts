@@ -73,7 +73,7 @@ try {
     console.log("Farming impressions...")
     for (let i = 0; i < 4; i++) {
     await refreshPage(driver)
-    await timeout(700);
+    await timeout(1000);
     }
     console.log("Exiting!")
     await driver.quit();
