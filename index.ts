@@ -33,7 +33,7 @@ async function closeOthers(driver:s.ThenableWebDriver | s.WebDriver,tab:string) 
 let url = "https://s.deblok.me/adf.html"
 const options = new Options();
 // ensure a new browsing session is created
-options.addArguments("--incognito","--disable-dev-shm-usage","--no-sandbox","disk-cache-size=0")
+options.addArguments("--incognito","--disable-dev-shm-usage","--no-sandbox","disk-cache-size=0","--proxy-server=http://209.126.6.159:80")
 let driver = await new s.Builder().forBrowser(s.Browser.CHROME).setChromeOptions(options).build()
 
 async function clickPopunders(driver:s.ThenableWebDriver | s.WebDriver) {
@@ -79,7 +79,7 @@ try {
 } finally {
     // get impressions before exiting 
     console.log("Farming impressions...")
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 10; i++) {
     await refreshPage(driver)
     await timeout(1000);
     }
