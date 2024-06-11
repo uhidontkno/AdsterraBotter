@@ -15,7 +15,6 @@ import * as s from "selenium-webdriver"
 let url = "https://s.deblok.me/adf.html"
 let driver = await new s.Builder().forBrowser(s.Browser.CHROME).build()
 async function clickPopunders(driver:s.ThenableWebDriver | s.WebDriver) {
-    console.log("destroying popunders")
     driver.executeScript(`
     let pu = document.querySelectorAll("div[style*=\\"z-index: 2147483647;\\"][style*=\\"position: fixed;\\"]")
     for (let i = 0; i < pu.length; i++) {
@@ -53,8 +52,9 @@ try {
     // get impressions before exiting 
     console.log("Farming impressions...")
     for (let i = 0; i < 8; i++) {
+    
     await driver.executeScript("document.location = document.location")
-    await timeout(3000)
+    await timeout(1000)
     }
     console.log("Exiting!")
     await driver.quit();
