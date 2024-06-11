@@ -1,6 +1,13 @@
+
+import * as s from "selenium-webdriver"
+
 function timeout(ms:number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 } 
+async function refreshPage(driver: s.WebDriver) {
+    await driver.navigate().refresh();
+    await driver.wait(s.until.elementLocated(s.By.css('body')), 5000); 
+}
 async function closeOthers(driver:s.ThenableWebDriver | s.WebDriver,tab:string) {
     const allHandles = await driver.getAllWindowHandles();
     for (const handle of allHandles) {
@@ -11,7 +18,7 @@ async function closeOthers(driver:s.ThenableWebDriver | s.WebDriver,tab:string) 
     }
     await driver.switchTo().window(tab);
 }
-import * as s from "selenium-webdriver"
+
 let url = "https://s.deblok.me/adf.html"
 let driver = await new s.Builder().forBrowser(s.Browser.CHROME).build()
 async function clickPopunders(driver:s.ThenableWebDriver | s.WebDriver) {
@@ -25,9 +32,9 @@ async function clickPopunders(driver:s.ThenableWebDriver | s.WebDriver) {
 try {
     await driver.get(url);
     const tab = await driver.getWindowHandle();
-    await clickPopunders(driver);
+    
     await timeout(2000);
-
+    await clickPopunders(driver);
     const ads = await driver.findElements(s.By.css('iframe[width="728"], iframe[width="468"], iframe[width="300"], iframe[width="320"], iframe[width="160"]'));
     console.log(`Found ${ads.length} ads! Clicking...`)
     for (const ad of ads) {
@@ -52,9 +59,7 @@ try {
     // get impressions before exiting 
     console.log("Farming impressions...")
     for (let i = 0; i < 8; i++) {
-    
-    await driver.executeScript("document.location = document.location")
-    await timeout(1000)
+    await refreshPage(driver)
     }
     console.log("Exiting!")
     await driver.quit();
