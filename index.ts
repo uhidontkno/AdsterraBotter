@@ -53,13 +53,16 @@ try {
         const link = await driver.findElement(s.By.tagName('a'));
         try {
         await link.click();
+        await timeout(800);
+        await driver.switchTo().window(tab); 
+        await timeout(800);
         } catch {
-            // intercepted click, attempt to click popunders
+            // intercepted click
             console.log("Popunder intercepted click, getting rid of it...")
             await clickPopunders(driver);
         }
         //await driver.close();
-        await driver.switchTo().window(tab); 
+        await timeout(1000);
     }
     await closeOthers(driver,tab)
     await driver.switchTo().window(tab);
